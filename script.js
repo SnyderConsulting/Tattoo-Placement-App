@@ -14,6 +14,24 @@ const mouse = new THREE.Vector2();
 let model;
 let decalMesh;
 
+// Control panel elements
+const panel = document.getElementById('control-panel');
+const widthSlider = document.getElementById('width');
+const heightSlider = document.getElementById('height');
+const rotationSlider = document.getElementById('rotation');
+
+function updateFromSliders() {
+    if (decalMesh) {
+        decalMesh.scale.x = parseFloat(widthSlider.value);
+        decalMesh.scale.y = parseFloat(heightSlider.value);
+        decalMesh.rotation.z = parseFloat(rotationSlider.value);
+    }
+}
+
+widthSlider.addEventListener('input', updateFromSliders);
+heightSlider.addEventListener('input', updateFromSliders);
+rotationSlider.addEventListener('input', updateFromSliders);
+
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientLight);
 const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -51,7 +69,7 @@ function onPointerDown(event) {
     if (!model) return;
 
     const intersects = raycaster.intersectObjects([model], true);
-    console.log(intersects);
+
 
     if (intersects.length > 0) {
         if (decalMesh) {
@@ -74,6 +92,11 @@ function onPointerDown(event) {
         });
         decalMesh = new THREE.Mesh(decalGeometry, decalMaterial);
         scene.add(decalMesh);
+        updateFromSliders();
+
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+        }
     }
 }
 
