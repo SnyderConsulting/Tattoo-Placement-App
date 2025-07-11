@@ -58,7 +58,7 @@ No external frameworks were used for the core application to keep it lightweight
 ```
 .
 ├── assets/
-│   └── model.glb         # The 3D human model file
+│   └── model.glb         # The 3D human model file (add separately)
 ├── index.html            # Main HTML file
 ├── style.css             # Styles for the UI panel and layout
 ├── script.js             # Core Three.js and application logic
