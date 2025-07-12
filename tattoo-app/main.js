@@ -12,12 +12,27 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100,
 );
+const canvasContainer = document.getElementById("canvas-container");
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("#c"),
   antialias: true,
 });
-renderer.setSize(window.innerWidth, window.innerHeight);
+setRendererSize();
 renderer.setPixelRatio(window.devicePixelRatio);
+
+/**
+ * Size the renderer and camera based on the canvas container.
+ * Ensures the canvas does not overlap the control panel.
+ *
+ * @returns {void}
+ */
+function setRendererSize() {
+  const width = canvasContainer.clientWidth;
+  const height = canvasContainer.clientHeight;
+  renderer.setSize(width, height, false);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+}
 
 // Lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -87,11 +102,7 @@ loader.load(
 );
 
 // Event Listeners
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+window.addEventListener("resize", setRendererSize);
 
 window.addEventListener("pointerdown", (event) => {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
