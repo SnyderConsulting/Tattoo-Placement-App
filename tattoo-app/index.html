@@ -1,16 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Digital Canvas (Vite)</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="layout">
       <div id="canvas-container">
         <canvas id="c"></canvas>
+      </div>
+      <div id="control-panel" class="panel">
+        <h2>Controls</h2>
+        <label
+          >Width
+          <input
+            type="range"
+            id="width"
+            min="0.05"
+            max="1"
+            step="0.01"
+            value="0.2"
+          />
+        </label>
+        <label
+          >Height
+          <input
+            type="range"
+            id="height"
+            min="0.05"
+            max="1"
+            step="0.01"
+            value="0.2"
+          />
+        </label>
+        <label
+          >Rotation
+          <input
+            type="range"
+            id="rotation"
+            min="-3.14"
+            max="3.14"
+            step="0.01"
+            value="0"
+          />
+        </label>
       </div>
     </div>
     <script type="module" src="/main.js"></script>
