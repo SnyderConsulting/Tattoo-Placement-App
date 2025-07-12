@@ -12,6 +12,8 @@ export const state = {
   anchorPosition: null,
   /** @type {import('three').Vector3|null} */
   anchorNormal: null,
+  /** @type {HTMLImageElement|null} */
+  image: null,
 };
 
 const subscribers = new Set();
