@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry.js";
-import { state, subscribe } from "../utils/state.js";
+import { state, setState, subscribe } from "../utils/state.js";
 
 let decalMesh; // current decal
+let anchorHelper; // visualizes hit normal
 let model;
 
 /**
@@ -38,31 +39,24 @@ export function initInteraction(scene, camera, dom) {
     if (intersects.length === 0) return;
 
     const hit = intersects[0];
-    const up = new THREE.Vector3(0, 0, 1);
-    const quaternion = new THREE.Quaternion().setFromUnitVectors(
-      up,
-      hit.face.normal,
-    );
-    const orientation = new THREE.Euler().setFromQuaternion(quaternion);
-    const decalSize = new THREE.Vector3(0.1, 0.1, 0.1);
-    const decalGeometry = new DecalGeometry(
-      hit.object,
-      hit.point,
-      orientation,
-      decalSize,
-    );
-    const decalMaterial = new THREE.MeshStandardMaterial({
-      color: 0xff0000,
-      transparent: true,
-      depthTest: false,
-      polygonOffset: true,
-      polygonOffsetFactor: -4,
-      opacity: 0.8,
+
+    if (!anchorHelper) {
+      anchorHelper = new THREE.ArrowHelper(
+        hit.face.normal.clone(),
+        hit.point.clone(),
+        0.1,
+        0x00ff00,
+      );
+      scene.add(anchorHelper);
+    } else {
+      anchorHelper.position.copy(hit.point);
+      anchorHelper.setDirection(hit.face.normal.clone());
+    }
+
+    setState({
+      anchorPosition: hit.point.clone(),
+      anchorNormal: hit.face.normal.clone(),
     });
-    if (decalMesh) scene.remove(decalMesh);
-    decalMesh = new THREE.Mesh(decalGeometry, decalMaterial);
-    scene.add(decalMesh);
-    applyState(state);
   });
 
   subscribe(applyState);
@@ -73,9 +67,35 @@ export function initInteraction(scene, camera, dom) {
    * @returns {void}
    */
   function applyState(s) {
-    if (!decalMesh) return;
-    decalMesh.scale.x = s.width / 0.1;
-    decalMesh.scale.y = s.height / 0.1;
-    decalMesh.rotation.z = s.rotation;
+    if (!s.anchorPosition || !s.anchorNormal || !model) return;
+
+    const up = new THREE.Vector3(0, 0, 1);
+    const quat = new THREE.Quaternion().setFromUnitVectors(
+      up,
+      s.anchorNormal.clone(),
+    );
+    const orientation = new THREE.Euler().setFromQuaternion(quat);
+    orientation.z += s.rotation;
+
+    const decalSize = new THREE.Vector3(s.width, s.height, 0.1);
+    const geometry = new DecalGeometry(
+      model,
+      s.anchorPosition.clone(),
+      orientation,
+      decalSize,
+    );
+
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xff0000,
+      transparent: true,
+      depthTest: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -4,
+      opacity: 0.8,
+    });
+
+    if (decalMesh) scene.remove(decalMesh);
+    decalMesh = new THREE.Mesh(geometry, material);
+    scene.add(decalMesh);
   }
 }
