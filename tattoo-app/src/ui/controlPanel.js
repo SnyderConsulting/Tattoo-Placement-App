@@ -22,6 +22,26 @@ export function initControlPanel() {
 
   function updatePreview(s) {
     ctx.clearRect(0, 0, preview.width, preview.height);
+
+    // draw subtle grid background
+    ctx.save();
+    ctx.strokeStyle = "#e0e0e0";
+    ctx.lineWidth = 1;
+    const spacing = 0.01 * PREVIEW_SCALE; // 1 cm grid
+    for (let x = spacing; x < preview.width; x += spacing) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, preview.height);
+      ctx.stroke();
+    }
+    for (let y = spacing; y < preview.height; y += spacing) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(preview.width, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+
     ctx.save();
     ctx.translate(preview.width / 2, preview.height / 2);
     ctx.rotate(s.rotation);
