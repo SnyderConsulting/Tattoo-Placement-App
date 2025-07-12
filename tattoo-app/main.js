@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
+import GUI from 'lil-gui';
 
 // Basic Setup
 const scene = new THREE.Scene();
@@ -30,23 +31,25 @@ const mouse = new THREE.Vector2();
 let model;
 let decalMesh;
 
-// Control panel elements
-const panel = document.getElementById('control-panel');
-const widthSlider = document.getElementById('width');
-const heightSlider = document.getElementById('height');
-const rotationSlider = document.getElementById('rotation');
+// lil-gui parameters
+const params = {
+  width: 0.2,
+  height: 0.2,
+  rotation: 0
+};
 
-function updateFromSliders() {
+const gui = new GUI();
+gui.add(params, 'width', 0.05, 1.0).onChange(updateFromGui);
+gui.add(params, 'height', 0.05, 1.0).onChange(updateFromGui);
+gui.add(params, 'rotation', -3.14, 3.14).onChange(updateFromGui);
+
+function updateFromGui() {
   if (decalMesh) {
-    decalMesh.scale.x = parseFloat(widthSlider.value);
-    decalMesh.scale.y = parseFloat(heightSlider.value);
-    decalMesh.rotation.z = parseFloat(rotationSlider.value);
+    decalMesh.scale.x = params.width;
+    decalMesh.scale.y = params.height;
+    decalMesh.rotation.z = params.rotation;
   }
 }
-
-widthSlider.addEventListener('input', updateFromSliders);
-heightSlider.addEventListener('input', updateFromSliders);
-rotationSlider.addEventListener('input', updateFromSliders);
 
 // Load Model
 const loader = new GLTFLoader();
@@ -98,12 +101,11 @@ window.addEventListener('pointerdown', (event) => {
             opacity: 0.8
         });
         decalMesh = new THREE.Mesh(decalGeometry, decalMaterial);
+        decalMesh.scale.x = params.width;
+        decalMesh.scale.y = params.height;
+        decalMesh.rotation.z = params.rotation;
         scene.add(decalMesh);
-        updateFromSliders();
-
-        if (panel.style.display === 'none') {
-            panel.style.display = 'block';
-        }
+        updateFromGui();
     }
 });
 
