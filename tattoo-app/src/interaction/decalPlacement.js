@@ -6,6 +6,7 @@ import { state, setState, subscribe } from "../utils/state.js";
 let decalMesh; // current decal
 let anchorHelper; // visualizes hit normal
 let model;
+let targetMesh; // mesh that received the click
 
 /**
  * Load the humanoid model and set up interaction events.
@@ -39,6 +40,7 @@ export function initInteraction(scene, camera, dom) {
     if (intersects.length === 0) return;
 
     const hit = intersects[0];
+    targetMesh = hit.object;
 
     if (!anchorHelper) {
       anchorHelper = new THREE.ArrowHelper(
@@ -67,7 +69,7 @@ export function initInteraction(scene, camera, dom) {
    * @returns {void}
    */
   function applyState(s) {
-    if (!s.anchorPosition || !s.anchorNormal || !model) return;
+    if (!s.anchorPosition || !s.anchorNormal || !targetMesh) return;
 
     const up = new THREE.Vector3(0, 0, 1);
     const quat = new THREE.Quaternion().setFromUnitVectors(
@@ -79,7 +81,7 @@ export function initInteraction(scene, camera, dom) {
 
     const decalSize = new THREE.Vector3(s.width, s.height, 0.1);
     const geometry = new DecalGeometry(
-      model,
+      targetMesh,
       s.anchorPosition.clone(),
       orientation,
       decalSize,
