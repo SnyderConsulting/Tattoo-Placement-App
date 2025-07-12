@@ -39,3 +39,16 @@ body {
   margin-bottom: 1rem;
   color: #333;
 }
+
+.unit-fields {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#preview {
+  border: 1px solid #ccc;
+  background: #fff;
+  display: block;
+  margin-top: 1rem;
+}
