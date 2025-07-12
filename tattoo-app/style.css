@@ -3,9 +3,15 @@ body {
   overflow: hidden;
 }
 
-#c {
+#canvas-container {
+  position: relative;
   width: 100%;
   height: 100vh;
+}
+
+#c {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -16,6 +22,7 @@ body {
   padding: 10px;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 4px;
+  z-index: 10;
   display: none;
 }
 
