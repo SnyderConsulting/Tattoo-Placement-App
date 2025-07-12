@@ -9,6 +9,19 @@ let model;
 let targetMesh; // mesh that received the click
 
 /**
+ * Convert pointer coordinates to normalized device coordinates relative to an element.
+ * @param {PointerEvent} event pointer event
+ * @param {HTMLElement} element element to measure offset from
+ * @param {THREE.Vector2} out vector to store normalized coordinates
+ * @returns {void}
+ */
+function getNormalizedPointer(event, element, out) {
+  const rect = element.getBoundingClientRect();
+  out.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  out.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+}
+
+/**
  * Load the humanoid model and set up interaction events.
  * @param {THREE.Scene} scene Three.js scene
  * @param {THREE.Camera} camera camera for raycasting
@@ -31,8 +44,7 @@ export function initInteraction(scene, camera, dom) {
   );
 
   dom.addEventListener("pointerdown", (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    getNormalizedPointer(event, dom, mouse);
     raycaster.setFromCamera(mouse, camera);
 
     if (!model) return;
