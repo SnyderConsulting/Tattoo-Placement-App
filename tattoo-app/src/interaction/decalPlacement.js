@@ -99,14 +99,21 @@ export function initInteraction(scene, camera, dom) {
       decalSize,
     );
 
-    const material = new THREE.MeshStandardMaterial({
-      color: 0xff0000,
+    const materialParams = {
       transparent: true,
       depthTest: false,
       polygonOffset: true,
       polygonOffsetFactor: -4,
-      opacity: 0.8,
-    });
+      opacity: s.image ? 1 : 0.8,
+    };
+    if (s.image) {
+      const texture = new THREE.Texture(s.image);
+      texture.needsUpdate = true;
+      materialParams.map = texture;
+    } else {
+      materialParams.color = 0xff0000;
+    }
+    const material = new THREE.MeshStandardMaterial(materialParams);
 
     if (decalMesh) scene.remove(decalMesh);
     decalMesh = new THREE.Mesh(geometry, material);

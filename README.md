@@ -33,6 +33,7 @@ The journey to a new tattoo should be exciting, but the initial consultation is 
 - **Real-time Design Controls:** Use a simple and clean UI to instantly adjust the placeholder's:
   - **Width & Height:** To get the scale just right.
   - **Rotation:** To match the flow of the body.
+- **Custom Image Decal:** Upload a PNG or JPG to preview your own artwork on the model.
 - **Export Your Vision:** With a single click, save the final placement as a high-quality PNG image, perfect for attaching to a booking form or email.
 
 ## Technology

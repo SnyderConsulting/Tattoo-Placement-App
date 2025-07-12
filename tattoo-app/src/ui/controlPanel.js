@@ -17,6 +17,7 @@ export function initControlPanel() {
   const heightIn = document.getElementById("height-inch");
   const heightCm = document.getElementById("height-cm");
   const preview = document.getElementById("preview");
+  const imageInput = document.getElementById("image-upload");
 
   const ctx = preview.getContext("2d");
 
@@ -45,11 +46,16 @@ export function initControlPanel() {
     ctx.save();
     ctx.translate(preview.width / 2, preview.height / 2);
     ctx.rotate(s.rotation);
-    ctx.fillStyle = "#ff0000";
-    ctx.globalAlpha = 0.8;
     const w = s.width * PREVIEW_SCALE;
     const h = s.height * PREVIEW_SCALE;
-    ctx.fillRect(-w / 2, -h / 2, w, h);
+    if (s.image) {
+      ctx.globalAlpha = 1;
+      ctx.drawImage(s.image, -w / 2, -h / 2, w, h);
+    } else {
+      ctx.fillStyle = "#ff0000";
+      ctx.globalAlpha = 0.8;
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+    }
     ctx.restore();
   }
 
@@ -73,6 +79,20 @@ export function initControlPanel() {
     setState({ width: widthM, height: heightM });
   }
 
+  function onImageUpload() {
+    const file = imageInput.files?.[0];
+    if (!file) return;
+    if (!["image/png", "image/jpeg"].includes(file.type)) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => setState({ image: img });
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
   widthSlider.addEventListener("input", onInput);
   heightSlider.addEventListener("input", onInput);
   rotationSlider.addEventListener("input", onInput);
@@ -80,6 +100,7 @@ export function initControlPanel() {
   widthCm.addEventListener("change", onUnitInput);
   heightIn.addEventListener("change", onUnitInput);
   heightCm.addEventListener("change", onUnitInput);
+  imageInput.addEventListener("change", onImageUpload);
 
   subscribe((s) => {
     widthSlider.value = s.width.toFixed(2);
