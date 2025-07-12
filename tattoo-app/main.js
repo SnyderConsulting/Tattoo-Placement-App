@@ -30,6 +30,24 @@ const mouse = new THREE.Vector2();
 let model;
 let decalMesh;
 
+// Control panel elements
+const panel = document.getElementById('control-panel');
+const widthSlider = document.getElementById('width');
+const heightSlider = document.getElementById('height');
+const rotationSlider = document.getElementById('rotation');
+
+function updateFromSliders() {
+  if (decalMesh) {
+    decalMesh.scale.x = parseFloat(widthSlider.value);
+    decalMesh.scale.y = parseFloat(heightSlider.value);
+    decalMesh.rotation.z = parseFloat(rotationSlider.value);
+  }
+}
+
+widthSlider.addEventListener('input', updateFromSliders);
+heightSlider.addEventListener('input', updateFromSliders);
+rotationSlider.addEventListener('input', updateFromSliders);
+
 // Load Model
 const loader = new GLTFLoader();
 loader.load(
@@ -66,10 +84,10 @@ window.addEventListener('pointerdown', (event) => {
             scene.remove(decalMesh);
         }
         const hit = intersects[0];
-        const orientation = new THREE.Euler();
-        orientation.setFromQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), hit.face.normal));
-
-        const decalSize = new THREE.Vector3(0.2, 0.2, 0.2);
+        const up = new THREE.Vector3(0, 0, 1);
+        const quaternion = new THREE.Quaternion().setFromUnitVectors(up, hit.face.normal);
+        const orientation = new THREE.Euler().setFromQuaternion(quaternion);
+        const decalSize = new THREE.Vector3(0.1, 0.1, 0.1);
         const decalGeometry = new DecalGeometry(hit.object, hit.point, orientation, decalSize);
         const decalMaterial = new THREE.MeshStandardMaterial({
             color: 0xff0000,
@@ -81,6 +99,11 @@ window.addEventListener('pointerdown', (event) => {
         });
         decalMesh = new THREE.Mesh(decalGeometry, decalMaterial);
         scene.add(decalMesh);
+        updateFromSliders();
+
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+        }
     }
 });
 
