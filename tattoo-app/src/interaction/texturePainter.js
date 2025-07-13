@@ -77,24 +77,21 @@ export function initTexturePainter(scene, camera, dom) {
    */
   function paintDecal(s) {
     if (!paintCtx || !s.anchorUV) return;
-    paintCtx.fillStyle = "#ffffff";
-    paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
-
-    const x = s.anchorUV.x * paintCanvas.width;
-    const y = (1 - s.anchorUV.y) * paintCanvas.height;
-    const w = s.width * paintCanvas.width;
-    const h = s.height * paintCanvas.height;
+    const pixelX = s.anchorUV.x * paintCanvas.width;
+    const pixelY = (1 - s.anchorUV.y) * paintCanvas.height;
+    const decalW = s.width * paintCanvas.width;
+    const decalH = s.height * paintCanvas.height;
 
     paintCtx.save();
-    paintCtx.translate(x, y);
+    paintCtx.translate(pixelX, pixelY);
     paintCtx.rotate(s.rotation);
     if (s.image) {
       paintCtx.globalAlpha = 1;
-      paintCtx.drawImage(s.image, -w / 2, -h / 2, w, h);
+      paintCtx.drawImage(s.image, -decalW / 2, -decalH / 2, decalW, decalH);
     } else {
       paintCtx.fillStyle = "#ff0000";
       paintCtx.globalAlpha = 0.8;
-      paintCtx.fillRect(-w / 2, -h / 2, w, h);
+      paintCtx.fillRect(-decalW / 2, -decalH / 2, decalW, decalH);
     }
     paintCtx.restore();
 
