@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry.js";
 import { state, setState, subscribe } from "../utils/state.js";
 import { filterSharpAngles } from "../utils/decalUtils.js";
+import { buildBoxDecal } from "../utils/boxDecalBuilder.js";
 
 let decalMesh; // current decal
 let anchorHelper; // visualizes hit normal
@@ -93,7 +93,7 @@ export function initInteraction(scene, camera, dom) {
     orientation.z += s.rotation;
 
     const decalSize = new THREE.Vector3(s.width, s.height, 0.1);
-    let geometry = new DecalGeometry(
+    let geometry = buildBoxDecal(
       targetMesh,
       s.anchorPosition.clone(),
       orientation,
