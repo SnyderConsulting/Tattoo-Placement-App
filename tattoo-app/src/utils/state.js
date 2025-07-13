@@ -8,10 +8,8 @@ export const state = {
   width: 0.2, // meters
   height: 0.2, // meters
   rotation: 0,
-  /** @type {import('three').Vector3|null} */
-  anchorPosition: null,
-  /** @type {import('three').Vector3|null} */
-  anchorNormal: null,
+  /** @type {import('three').Vector2|null} */
+  anchorUV: null,
   /** @type {HTMLImageElement|null} */
   image: null,
 };

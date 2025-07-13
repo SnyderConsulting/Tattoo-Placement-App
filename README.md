@@ -43,7 +43,7 @@ This tool is built with modern, lightweight web technologies to ensure it is fas
 - **Core Rendering:** [Three.js](https://threejs.org/)
 - **Application Logic:** Vanilla JavaScript (ESM)
 - **Build Tooling:** [Vite](https://vitejs.dev/)
-- **Decal Projection:** Using Three.js `DecalGeometry` to wrap decals onto the body mesh.
+- **Dynamic Texture Painting:** Decals are stamped directly onto a `CanvasTexture` using UV coordinates.
 - **Surface Filtering:** Custom utility filters decal geometry by face angle to minimize stretching on complex parts of the model.
 
 ## Getting Started
