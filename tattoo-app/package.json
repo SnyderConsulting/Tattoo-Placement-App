@@ -13,6 +13,7 @@
     "vite": "^7.0.4"
   },
   "dependencies": {
+    "@lume/three-projected-material": "^0.4.0",
     "lil-gui": "^0.18.2",
     "three": "^0.178.0"
   }
