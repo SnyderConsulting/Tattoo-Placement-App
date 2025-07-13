@@ -40,9 +40,12 @@ export function initProjector(scene, camera, dom) {
       model.traverse((child) => {
         if (child.isMesh) {
           const baseMap = child.material.map || null;
+          const baseTexture = new THREE.Texture();
+          baseTexture.wrapS = THREE.ClampToEdgeWrapping;
+          baseTexture.wrapT = THREE.ClampToEdgeWrapping;
           const mat = new ProjectedMaterial({
             camera: new THREE.OrthographicCamera(1, 1, 1, 1, 0.01, 10),
-            texture: new THREE.Texture(),
+            texture: baseTexture,
             map: baseMap,
             transparent: true,
           });
@@ -97,8 +100,11 @@ export function initProjector(scene, camera, dom) {
     projector.position
       .copy(s.anchorPosition)
       .addScaledVector(s.anchorNormal, 0.01);
-    projector.up.set(0, 1, 0);
-    projector.lookAt(s.anchorPosition);
+    const quat = new THREE.Quaternion().setFromUnitVectors(
+      new THREE.Vector3(0, 0, -1),
+      s.anchorNormal.clone().normalize(),
+    );
+    projector.quaternion.copy(quat);
     projector.rotateZ(s.rotation);
     projector.updateProjectionMatrix();
 
@@ -107,6 +113,8 @@ export function initProjector(scene, camera, dom) {
     if (s.image) {
       const texture = new THREE.Texture(s.image);
       texture.needsUpdate = true;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
       material.texture = texture;
     }
     material.updateFromCamera();
