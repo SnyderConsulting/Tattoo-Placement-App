@@ -44,6 +44,7 @@ This tool is built with modern, lightweight web technologies to ensure it is fas
 - **Application Logic:** Vanilla JavaScript (ESM)
 - **Build Tooling:** [Vite](https://vitejs.dev/)
 - **Decal Projection:** Using Three.js `DecalGeometry` to wrap decals onto the body mesh.
+- **Surface Filtering:** Custom utility filters decal geometry by face angle to minimize stretching on complex parts of the model.
 
 ## Getting Started
 

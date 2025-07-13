@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry.js";
 import { state, setState, subscribe } from "../utils/state.js";
+import { filterSharpAngles } from "../utils/decalUtils.js";
 
 let decalMesh; // current decal
 let anchorHelper; // visualizes hit normal
@@ -92,18 +93,23 @@ export function initInteraction(scene, camera, dom) {
     orientation.z += s.rotation;
 
     const decalSize = new THREE.Vector3(s.width, s.height, 0.1);
-    const geometry = new DecalGeometry(
+    let geometry = new DecalGeometry(
       targetMesh,
       s.anchorPosition.clone(),
       orientation,
       decalSize,
     );
 
+    const projectorNormal = s.anchorNormal.clone().normalize();
+    const MAX_SURFACE_ANGLE = Math.PI / 4; // 45 degrees
+    geometry = filterSharpAngles(geometry, projectorNormal, MAX_SURFACE_ANGLE);
+
     const materialParams = {
       transparent: true,
       depthTest: false,
       polygonOffset: true,
       polygonOffsetFactor: -4,
+      polygonOffsetUnits: 1,
       opacity: s.image ? 1 : 0.8,
     };
     if (s.image) {
